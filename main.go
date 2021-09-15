@@ -9,6 +9,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/patarapolw/atexit"
+	"github.com/rep2recall/duolog"
 	"github.com/rep2recall/plugin-zh/api"
 	"github.com/rep2recall/plugin-zh/db"
 	"github.com/yanyiwu/gojieba"
@@ -31,11 +32,17 @@ func main() {
 	} else {
 		db.Connect()
 
+		d := duolog.Duolog{
+			NoColor: true,
+		}
+		d.New()
+
 		app := fiber.New()
 		app.Use(recover.New(recover.Config{
 			EnableStackTrace: true,
 		}))
 		app.Use(logger.New(logger.Config{
+			Output: d,
 			Format: "[${time}] :${port} ${status} - ${latency} ${method} ${path} ${queryParams}\n",
 		}))
 
