@@ -1,0 +1,23 @@
+{
+  "name": "@plugin-zh/scripts",
+  "version": "0.1.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@types/better-sqlite3": "^7.4.0",
+    "@types/node": "^16.9.1",
+    "better-sqlite3": "^7.4.3",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3"
+  },
+  "devDependencies": {
+    "import-sort-parser-typescript": "^6.0.0"
+  },
+  "importSort": {
+    ".js, .ts": {
+      "parser": "typescript",
+      "style": "module"
+    }
+  }
+}

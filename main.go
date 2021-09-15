@@ -7,7 +7,10 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/patarapolw/atexit"
+	"github.com/rep2recall/plugin-zh/api"
+	"github.com/rep2recall/plugin-zh/db"
 	"github.com/yanyiwu/gojieba"
 )
 
@@ -26,10 +29,16 @@ func main() {
 	if len(os.Args) > 1 {
 		fmt.Println(strings.Join(Tokenize(os.Args[1]), " "))
 	} else {
+		db.Connect()
+
 		app := fiber.New()
+		app.Use(recover.New(recover.Config{
+			EnableStackTrace: true,
+		}))
 		app.Use(logger.New(logger.Config{
 			Format: "[${time}] :${port} ${status} - ${latency} ${method} ${path} ${queryParams}\n",
 		}))
+
 		app.Get("/tokenize", func(c *fiber.Ctx) error {
 			var query struct {
 				Q string `query:"q" validate:"required"`
@@ -43,6 +52,10 @@ func main() {
 				"result": Tokenize(query.Q),
 			})
 		})
+
+		api.Vocab(app)
+		api.Sentence(app)
+
 		port := os.Getenv("PORT")
 		if port == "" {
 			port = "27002"
