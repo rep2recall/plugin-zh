@@ -39,9 +39,10 @@ func Tokenize(s string) []string {
 }
 
 func main() {
+	atexit.Listen()
+
 	jieba = gojieba.NewJieba()
 	atexit.Register(jieba.Free)
-	atexit.Listen()
 	defer jieba.Free()
 
 	if len(os.Args) > 1 {
