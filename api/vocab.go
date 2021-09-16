@@ -1,16 +1,18 @@
 package api
 
 import (
+	"encoding/json"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/rep2recall/plugin-zh/db"
 )
 
 func Vocab(app *fiber.App) {
 	type cedict struct {
-		Simplified  string `json:"simplified"`
-		Traditional string `json:"traditional"`
-		Reading     string `json:"reading"`
-		English     string `json:"english"`
+		Simplified  string   `json:"simplified"`
+		Traditional string   `json:"traditional"`
+		Reading     string   `json:"reading"`
+		English     []string `json:"english"`
 	}
 
 	r := app.Group("/vocab")
@@ -42,8 +44,13 @@ func Vocab(app *fiber.App) {
 
 		for rows.Next() {
 			o := cedict{}
+			eng := ""
 
-			if err := rows.Scan(&o.Simplified, &o.Traditional, &o.Reading, &o.English); err != nil {
+			if err := rows.Scan(&o.Simplified, &o.Traditional, &o.Reading, &eng); err != nil {
+				panic(err)
+			}
+
+			if err := json.Unmarshal([]byte(eng), &o.English); err != nil {
 				panic(err)
 			}
 
