@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -18,7 +19,23 @@ import (
 var jieba *gojieba.Jieba
 
 func Tokenize(s string) []string {
-	return jieba.CutForSearch(s, true)
+	tokens := jieba.CutForSearch(s, true)
+	m := make(map[string]bool)
+	regex := regexp.MustCompile(`\p{Han}`)
+	for _, t := range tokens {
+		if regex.MatchString(t) {
+			m[t] = true
+		}
+	}
+
+	tokens = []string{}
+	for k, v := range m {
+		if v {
+			tokens = append(tokens, k)
+		}
+	}
+
+	return tokens
 }
 
 func main() {
