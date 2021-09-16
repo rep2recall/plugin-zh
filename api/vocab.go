@@ -1,6 +1,7 @@
 package api
 
 import (
+	"database/sql"
 	"encoding/json"
 
 	"github.com/gofiber/fiber/v2"
@@ -10,7 +11,7 @@ import (
 func Vocab(app *fiber.App) {
 	type cedict struct {
 		Simplified  string   `json:"simplified"`
-		Traditional string   `json:"traditional"`
+		Traditional *string  `json:"traditional"`
 		Reading     string   `json:"reading"`
 		English     []string `json:"english"`
 	}
@@ -44,10 +45,15 @@ func Vocab(app *fiber.App) {
 
 		for rows.Next() {
 			o := cedict{}
+			var trad sql.NullString
 			eng := ""
 
-			if err := rows.Scan(&o.Simplified, &o.Traditional, &o.Reading, &eng); err != nil {
+			if err := rows.Scan(&o.Simplified, &trad, &o.Reading, &eng); err != nil {
 				panic(err)
+			}
+
+			if trad.Valid {
+				o.Traditional = &trad.String
 			}
 
 			if err := json.Unmarshal([]byte(eng), &o.English); err != nil {
