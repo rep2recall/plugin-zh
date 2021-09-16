@@ -6,8 +6,8 @@ require (
 	github.com/PuerkitoBio/goquery v1.7.1
 	github.com/gofiber/fiber/v2 v2.18.0
 	github.com/mattn/go-sqlite3 v1.14.8
-	github.com/patarapolw/atexit v0.4.0
-	github.com/rep2recall/duolog v0.1.2
+	github.com/patarapolw/atexit v0.4.1
+	github.com/rep2recall/duolog v0.1.3
 	github.com/yanyiwu/gojieba v1.1.2
 )
 
